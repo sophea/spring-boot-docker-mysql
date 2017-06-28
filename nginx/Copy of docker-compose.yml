@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+
+    mysql:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: demo
+            MYSQL_USER: demo_user
+            MYSQL_PASSWORD: demo_pass
+        ports:
+            - "3306:3306"
+    app1:
+        image: sopheamak/springboot_docker_mysql
+        depends_on:
+            - mysql
+        environment:
+              DATABASE_HOST: mysql
+              DATABASE_USER: demo_user
+              DATABASE_PASSWORD: demo_pass
+              DATABASE_NAME: demo
+              DATABASE_PORT: 3306
+
+    app2:
+        image: sopheamak/springboot_docker_mysql
+        depends_on:
+            - mysql
+        environment:
+              DATABASE_HOST: mysql
+              DATABASE_USER: demo_user
+              DATABASE_PASSWORD: demo_pass
+              DATABASE_NAME: demo
+              DATABASE_PORT: 3306
+    app3:
+        image: sopheamak/springboot_docker_mysql
+        depends_on:
+            - mysql
+        environment:
+              DATABASE_HOST: mysql
+              DATABASE_USER: demo_user
+              DATABASE_PASSWORD: demo_pass
+              DATABASE_NAME: demo
+              DATABASE_PORT: 3306

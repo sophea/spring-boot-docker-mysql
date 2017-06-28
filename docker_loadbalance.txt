@@ -1,0 +1,92 @@
+ 
+ Run MySQL 5.7 in Docker container:
+
+~~~
+docker run --name demo-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=demo -e MYSQL_USER=demo_user -e MYSQL_PASSWORD=demo_pass -p  3306:3306 -d mysql:5.7
+~~~
+ 
+ 
+  
+ server1 : webapp1 
+ docker run -p 8080  --name webapp1 --link demo-mysql:mysql -d sopheamak/springboot_docker_mysql
+ 
+ 
+ server2 :  webapp2
+ 
+ docker run  -p 8080  --name webapp2 --link demo-mysql:mysql -d  sopheamak/springboot_docker_mysql
+
+
+server3 :  webapp3
+ docker run  -p 8080 --name webapp3 --link demo-mysql:mysql -d  sopheamak/springboot_docker_mysql
+  
+ 
+ create own nginx conf : default.conf : see at ngix folder
+ ==========
+ upstream backend {
+  server app1:8080;
+  server app2:8080;
+  server app3:8080;
+
+}
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/log/host.access.log  main;
+
+    location / {
+        proxy_pass http://backend;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+ 
+ ==========
+ 
+ >> start nginx with link server tomcat
+ 
+ docker run -d --link webapp1:app1 --link webapp2:app2 --link webapp3:app3 -v /data/workspace_android/git/spring-boot-docker-mysql/nginx/default.conf:/etc/nginx/conf.d/default.conf nginx --name nginx
+ 
+ 
+ ===next step with docker-compse==
+  
+  go to nginx folder
+  cd /data/workspace_android/git/spring-boot-docker-mysql/nginx
+  
+  [sophea@sophea-ThinkPad-Edge-E440 nginx] (master) $ pwd
+/data/workspace_android/git/spring-boot-docker-mysql/nginx
+
+
+Then run command as below
+
+$docker-compose up &
+
+sophea@sophea-ThinkPad-Edge-E440 nginx] (master) $ sudo docker-compose up &
+[1] 30244
+[sophea@sophea-ThinkPad-Edge-E440 nginx] (master) $ docker ps
+CCONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+c1529ed4d341        nginx                               "nginx -g 'daemon off"   3 seconds ago       Up 1 seconds        0.0.0.0:8080->80/tcp     nginx_portal_1
+ae9bcbf90ab5        sopheamak/springboot_docker_mysql   "/bin/bash /wrapper.s"   8 seconds ago       Up 3 seconds                                 nginx_app1_1
+7395fe43a35e        sopheamak/springboot_docker_mysql   "/bin/bash /wrapper.s"   8 seconds ago       Up 3 seconds                                 nginx_app3_1
+bb5532ebbdb0        sopheamak/springboot_docker_mysql   "/bin/bash /wrapper.s"   8 seconds ago       Up 3 seconds                                 nginx_app2_1
+1dc0429487e9        mysql:5.7                           "docker-entrypoint.sh"   10 seconds ago      Up 8 seconds        0.0.0.0:3306->3306/tcp   nginx_mysql_1
+d467a1e8e99e        docker/compose:1.13.0               "docker-compose up"      11 seconds ago      Up 10 seconds                                lonely_goldberg
+
+======shutdown all container with docker-compose===
+
+docker-compose down -v
+
+
+
+
+
+
+    

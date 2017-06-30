@@ -8,4 +8,9 @@ fi
 basedir=$(dirname $0)
 currentVersion=$(${basedir}/getVersion.sh)
 
-sed -i -- 's/'${currentVersion}'/'${1}'/g' ${basedir}/../../pom.xml
+#replace all lines /g
+#sed -i -- 's/'${currentVersion}'/'${1}'/g' ${basedir}/../../pom.xml
+
+#replace for line only
+sed -i -- '0,/'${currentVersion}/' s/'/${1}/'' ${basedir}/../../pom.xml
+

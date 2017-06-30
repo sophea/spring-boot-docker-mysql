@@ -5,7 +5,7 @@
 
     <groupId>com.sma</groupId>
     <artifactId>springboot_docker_mysql</artifactId>
-    <version>1.6</version>
+    <version>1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>springboot_docker_mysql</name>

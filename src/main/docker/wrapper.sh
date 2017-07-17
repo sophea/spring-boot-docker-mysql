@@ -17,4 +17,4 @@ done
 # run the command
 exec $cmd
 
-java -Djava.security.egd=file:/dev/./urandom -jar /demo.jar
+java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=container -jar /demo.jar

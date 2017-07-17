@@ -1,11 +1,21 @@
+
 spring:
     jpa:
+        database-platform: org.hibernate.dialect.MySQLDialect
         database: MYSQL
         hibernate:
             ddl-auto: validate
-
+    datasource:
+        url: jdbc:mysql://localhost:3306/demo
+        username: root
+        password: root
+        platform: mysql
+        initialize: false
+---
+spring:
+    profiles: container
     datasource:
         url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-        username: demo_user
-        password: demo_pass
+        username: ${DATABASE_USER}
+        password: ${DATABASE_PASSWORD}
         driver-class-name: com.mysql.jdbc.Driver

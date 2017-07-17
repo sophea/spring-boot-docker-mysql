@@ -1,0 +1,88 @@
+run springboot with none-docker : 
+
+1 - assume that you already installed mysql in your pc   
+   - db name : demo
+   - user : root
+   - password : root 
+
+mvn clean spring-boot:run
+
+=============================
+
+
+deploy springboot docker with local mysql database
+
+1- : Open local mysql database as public
+
+>> nano /etc/mysql/mysql.conf.d
+# comment bind-address = 127.0.0.1
+[mysqld]
+pid-file    = /var/run/mysqld/mysqld.pid
+socket      = /var/run/mysqld/mysqld.sock
+datadir     = /var/lib/mysql
+log-error   = /var/log/mysql/error.log
+# By default we only accept connections from localhost
+#bind-address   = 127.0.0.1
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+sql_mode=NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+
+>> sudo /etc/init.d/mysql restart
+
+>> mysql -uroot -proot
+
+run the following command
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+ FLUSH PRIVILEGES;
+
+
+2 - spring-boot application : application.yml file
+
+ip : 10.1.2.232  - replace your local ip
+spring:
+    jpa:
+        database: MYSQL
+        hibernate:
+            ddl-auto: validate
+
+    datasource:
+        url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+        username: ${DATABASE_USER}
+        password: ${DATABASE_PASSWORD}
+        driver-class-name: com.mysql.jdbc.Driver
+
+
+
+3 - run docker build :
+# set HOSTIP : 
+>> HOSTIP=`ip -4 addr show scope global dev eth0 | grep inet | awk '{print \$2}' | cut -d / -f 1`
+
+# add this host to docker
+
+>> docker run -d --name web-app --add-host=local:${HOSTIP} -p 8080:8080 -e DATABASE_HOST=${HOSTIP} -e DATABASE_PORT=3306 -e DATABASE_NAME=demo  -e DATABASE_USER=root -e DATABASE_PASSWORD=root   sopheamak/springboot_docker_mysql
+
+
+
+
+run with docker-compose : docker-compose-localdb.yml
+
+version: '2.1'
+
+services:  
+  tomcatwar:
+     extra_hosts:
+        - "local:10.1.2.232"
+     image: sopheamak/springboot_docker_mysql     
+     ports:
+         - 8080:8080
+     environment:
+            - DATABASE_HOST=local
+            - DATABASE_USER=root
+            - DATABASE_PASSWORD=root
+            - DATABASE_NAME=demo
+            - DATABASE_PORT=3306
+ 
+
+
+>> docker-compose -f docker-compose-localdb.yml up

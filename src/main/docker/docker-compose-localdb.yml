@@ -3,7 +3,7 @@ version: '2.1'
 services:  
   tomcatwar:
      extra_hosts:
-        - "local:10.1.2.232"
+        - "local:$HOSTIP"
      image: sopheamak/springboot_docker_mysql
      ports:
          - 8080:8080

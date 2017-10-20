@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   mysql:
@@ -10,7 +10,8 @@ services:
             MYSQL_PASSWORD: demo_pass
         ports:
             - "3306:3306"
-            
+        restart: always
+        
   app1:
      image: sopheamak/springboot_docker_mysql
      depends_on:
@@ -21,7 +22,7 @@ services:
               DATABASE_PASSWORD: demo_pass
               DATABASE_NAME: demo
               DATABASE_PORT: 3306
- 
+    
   app2:
      image: sopheamak/springboot_docker_mysql
      depends_on:
@@ -32,7 +33,7 @@ services:
               DATABASE_PASSWORD: demo_pass
               DATABASE_NAME: demo
               DATABASE_PORT: 3306
-
+    
   app3:
      image: sopheamak/springboot_docker_mysql
      depends_on:

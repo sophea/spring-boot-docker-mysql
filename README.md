@@ -12,10 +12,6 @@ See my [blog post about it](https://github.com/sophea/spring-boot-docker-mysql/w
 
 mvn clean spring-boot:run
 
-## How to run docker application with localhost database
-
-See the file :  (docker-with-localhost-database.txt)
-
 ## How to run it with Docker
 
 Assume you already have Docker installed. See https://docs.docker.com/installation/.
@@ -31,7 +27,11 @@ cd spring-boot-docker-mysql
 mvn clean package docker:build
 ~~~
 
-Run MySQL 5.7 in Docker container:
+## How to run docker application with localhost database
+
+See the file :  (docker-with-localhost-database.txt)
+
+### Run MySQL 5.7 in Docker container:
 
 ~~~
 docker run --name demo-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=demo -e DATABASE_USER=demo_user -e DATABASE_PASSWORD=demo_pass -p  3306:3306 -d mysql:5.7
